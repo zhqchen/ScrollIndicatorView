@@ -9,6 +9,7 @@ import android.graphics.Path;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -31,9 +32,11 @@ public class ScrollIndicatorView extends View {
     private int movedMaxWidth;//指示条单向滑动的最大距离
 
     private float positionOffset;//ViewPager的便宜比例
-    private float relateScrollWidth;//指示条滑动的偏移量
+    private float relateScrollWidth;//指示条一次滑动的单向偏移量
 
+    private int currentPosition;
     private int startY;
+    private int itemCount;//
 
     public ScrollIndicatorView(Context context) {
         this(context, null);
@@ -89,7 +92,7 @@ public class ScrollIndicatorView extends View {
             height = indicatorHeight;
         }
         setMeasuredDimension(widthSize, height);
-        if(movedMaxWidth == 0) {
+        if(movedMaxWidth == 0 ) {
             startY = getMeasuredHeight() / 2;
             movedMaxWidth = itemMargin + indicateView.getMeasuredWidth();//指示条单向滑动的距离
         }
@@ -100,16 +103,23 @@ public class ScrollIndicatorView extends View {
         super.onDraw(canvas);
         mPath.reset();
         float movingX;
-        if(positionOffset <= 0.5) {//indicatorOffset---> getMeasuredWidth() - indicatorOffset
-            movingX = relateScrollWidth + indicateView.getMeasuredWidth() - indicatorOffset;
-            mPath.moveTo(indicatorOffset, startY);
+        if(positionOffset <= 0.5) {//滑动的前半段
+            int startX = indicatorOffset + currentPosition * movedMaxWidth;
+            movingX = currentPosition * movedMaxWidth + relateScrollWidth + indicateView.getMeasuredWidth() - indicatorOffset;
+            mPath.moveTo(startX, startY);
             mPath.lineTo(movingX, startY);
-        } else {
-            movingX = relateScrollWidth - movedMaxWidth + indicatorOffset;
+        } else if(positionOffset < 1) {//滑动的后半段
+            movingX = indicatorOffset + currentPosition * movedMaxWidth + relateScrollWidth - movedMaxWidth;//这里relateScrollWidth - movedMaxWidth是因为relateScrollWidth速度乘2了
             mPath.moveTo(movingX, startY);
-            mPath.lineTo(getMeasuredWidth() - indicatorOffset, startY);
+            mPath.lineTo(getMeasuredWidth() - (itemCount - currentPosition - 2) * movedMaxWidth - indicatorOffset, startY);
+        } else {//一次滑动的终点
+            int position = positionOffset < 1 ? currentPosition + 1 : currentPosition;
+            movingX = (position-1) * movedMaxWidth + relateScrollWidth - movedMaxWidth + indicatorOffset;
+            mPath.moveTo(movingX, startY);
+            mPath.lineTo(getMeasuredWidth() - (itemCount - currentPosition - 1) * movedMaxWidth - indicatorOffset, startY);
         }
-//        Log.e("onDraw", "movingX-->" + movingX + "getMeasuredWidth() - indicatorOffset-->"  + (getMeasuredWidth() - indicatorOffset));
+        Log.e("onDraw", "movingX is -->" + movingX + "result is -->"  +
+                ((itemCount - currentPosition - 2) * movedMaxWidth - indicatorOffset));
         canvas.drawPath(mPath, mPaint);
     }
 
@@ -125,6 +135,7 @@ public class ScrollIndicatorView extends View {
         if(viewPager == null || viewPager.getAdapter() == null) {
             throw new IllegalArgumentException("viewPager should setAdapter first");
         }
+        itemCount = viewPager.getAdapter().getCount();
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -132,8 +143,10 @@ public class ScrollIndicatorView extends View {
                 if(position != 0 && positionOffset == 0) {
                     positionOffset = 1;
                 }
+                ScrollIndicatorView.this.currentPosition = position;
                 ScrollIndicatorView.this.positionOffset = positionOffset;
-                relateScrollWidth = 2 * movedMaxWidth * positionOffset;//当ViewPager滑动一半时，indicator也正向滑动一次，ViewPager滑动后半段，indicator反向滑动一次，
+                relateScrollWidth = 2 * movedMaxWidth * positionOffset;//当ViewPager滑动一半时，indicator也正向滑动一次，ViewPager滑动后半段，indicator反向滑动一次, 因此滑动速度乘2,
+                Log.e("onPageScrolled", "position-->" + position + "positionOffset-->" + positionOffset);
                 postInvalidate();
             }
 

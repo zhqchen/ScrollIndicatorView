@@ -31,6 +31,13 @@
                 android:layout_marginLeft="20dp"
                 android:text="Hello World!"/>
 
+            <TextView
+                android:id="@+id/tv_right2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="Hello World!"/>
+
         </LinearLayout>
 
         <zhqchen.com.scrollindicatorview.ScrollIndicatorView
