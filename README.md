@@ -1,7 +1,7 @@
 # ScrollIndicatorView
 an indicator bar view scrolling with ViewPager
 
-![](./screenshots/nine_grid.png)
+![](./screenshots/scroll_indicator_view.gif)
 
 ### Configuration item
 ```
