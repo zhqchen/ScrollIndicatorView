@@ -1,4 +1,4 @@
-package zhqchen.com.scrollindicatorview;
+package com.zhqchen.scrollindicatorview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -6,7 +6,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
+import android.support.annotation.Px;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -14,7 +16,7 @@ import android.util.TypedValue;
 import android.view.View;
 
 /**
- *自定义指示条，实现weibo标题的指示器滑动效果
+ *自定义指示条，实现类似weibo标题的指示器滑动效果
  * Created by CHENZHIQIANG247 on 2017-12-07.
  */
 public class ScrollIndicatorView extends View {
@@ -36,7 +38,7 @@ public class ScrollIndicatorView extends View {
 
     private int currentPosition;
     private int startY;
-    private int itemCount;//
+    private int itemCount;//指示tab的数量
 
     public ScrollIndicatorView(Context context) {
         this(context, null);
@@ -160,5 +162,23 @@ public class ScrollIndicatorView extends View {
 
             }
         });
+    }
+
+    public void setIndicatorColor(@ColorInt int color) {
+        this.indicatorColor = color;
+        mPaint.setColor(color);
+    }
+
+    public void setIndicatorHeight(@Px int height) {
+        this.indicatorHeight = height;
+        mPaint.setStrokeWidth(height);
+    }
+
+    public void setIndicatorOffset(@Px int offset) {
+        this.indicatorOffset = offset;
+    }
+
+    public void setItemMargin(@Px int itemMargin) {
+        this.itemMargin = itemMargin;
     }
 }

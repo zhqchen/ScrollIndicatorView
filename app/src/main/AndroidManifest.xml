@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="zhqchen.com.scrollindicatorview"
+<manifest package="com.zhqchen.scrollindicatorview"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application

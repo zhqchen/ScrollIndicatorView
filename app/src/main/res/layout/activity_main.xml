@@ -40,7 +40,7 @@
 
         </LinearLayout>
 
-        <zhqchen.com.scrollindicatorview.ScrollIndicatorView
+        <com.zhqchen.scrollindicatorview.ScrollIndicatorView
             android:id="@+id/siv_indicator"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

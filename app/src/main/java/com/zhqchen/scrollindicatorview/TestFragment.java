@@ -1,4 +1,4 @@
-package zhqchen.com.scrollindicatorview;
+package com.zhqchen.scrollindicatorview;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
